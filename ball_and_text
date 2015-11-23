@@ -1,0 +1,50 @@
+# ballAndText script
+#  This was rewritten by MA
+# This is for 20ms upState
+import bpy
+import math
+
+# the following constants must be coordinated with the animation script
+secPerTimeStep = 1
+suspendInSec = 7.5          # time before first event starts.  Should be coordinated with ballAndText script  MA
+developmentTimeInSec = 0    # This is ignored in the calculations here
+upStateTime = 20
+overlap = 0.95              # the difference between two start times must be 1
+
+# the following must be coordinated with the time*.csv file
+timeOf_1st_event = 0
+timeOf_last_evnt = 74
+
+numOfTimeSteps = (timeOf_last_evnt - timeOf_1st_event) + upStateTime
+timeJumps = 1                # was 2
+xStartLoc = -12
+xEndLoc = 12
+# offset = prePatternTimeInSec  # was*2
+prePatternStr = 'Pre Pattern period'
+postPatternStr = 'Post Pattern period'
+
+
+scene = bpy.context.scene
+timeText = scene.objects['Text']
+ball = scene.objects['TimeBall']
+totalDistance = xEndLoc-xStartLoc
+
+
+def recalculate_ball_and_text(scene):
+    fps = scene.render.fps
+    currentFrame = scene.frame_current
+    currentTime = math.floor((currentFrame+12)/fps)
+    timeInAnimation = currentTime - suspendInSec + timeOf_1st_event
+
+    calcCurText = timeInAnimation - 0.5
+    numOfSecAfterPreTimeAndTimeSteps = (suspendInSec + numOfTimeSteps*secPerTimeStep)
+    ball.location[1] = xStartLoc + scene.frame_current*(totalDistance/bpy.data.scenes['Scene'].frame_end)
+    if currentTime-suspendInSec >= 0:
+        if currentTime > (numOfTimeSteps+suspendInSec):
+            timeText.data.body = postPatternStr
+        else:
+            timeText.data.body = '{0:.1f} ms.'.format(calcCurText)
+    else:
+        timeText.data.body = prePatternStr
+
+bpy.app.handlers.frame_change_pre.append(recalculate_ball_and_text)
