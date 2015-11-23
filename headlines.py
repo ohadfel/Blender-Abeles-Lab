@@ -1,7 +1,7 @@
 import bpy
 import csv
 import math
-import os
+
 
 
 # Set constants
