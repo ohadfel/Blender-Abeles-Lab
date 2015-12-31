@@ -2,8 +2,14 @@ import bpy
 import math
 import bpy
 import mathutils
-import pydevd
 import numpy as np
+
+
+lookup_table_full_path = '/media/ohadfel/Elements/Abeles/blender_lookup_table.npy'
+pathAndName = 'C://abeles//brain3inBlender//Frames1//framesT18'
+startFrame = 1
+# endFrame = bpy.context.scene.frame_end+1
+endFrame = 2785
 
 
 def color_vertex(obj, vert, color):
@@ -112,7 +118,7 @@ def calc_timepoint(new_frame=bpy.context.scene.frame_current):
     vertex_to_color_list = list(set(vertex_to_color_list))
     # for vertex_ind in vertex_to_color_list:
     #     color_vertex(bpy.data.objects['out'], vertex_ind, color)
-    f = np.load('/media/ohadfel/Elements/Abeles/blender_lookup_table.npy')
+    f = np.load(lookup_table_full_path)
     for vertex_ind in vertex_to_color_list:
         for face_ind in f[vertex_ind, :]:
             if face_ind == -1:
@@ -123,10 +129,6 @@ def calc_timepoint(new_frame=bpy.context.scene.frame_current):
             brain_obj.data.vertex_colors['Col'].data[face_ind].color = (cur_R, cur_G, cur_B)
 
 
-pathAndName = 'C://abeles//brain3inBlender//Frames1//framesT18'
-startFrame = 1
-# endFrame = bpy.context.scene.frame_end+1
-endFrame = 2785
 for i in range(startFrame, endFrame):
     print("Rendering frame "+str(i)+" of "+str(bpy.context.scene.frame_end))
     bpy.context.scene.frame_current = i

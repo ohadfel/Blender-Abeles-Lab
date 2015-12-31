@@ -131,15 +131,14 @@ def createMaterial(name, diffuseColors,transparency):
 
 
 # Set constants
-new_object_creation = False
-project_location_on_surface = False
+new_object_creation = True
+project_location_on_surface = True
 # pathToCSV = "D:\\abeles\\brain3inBlender\\CSVfiles\\Tmplt18_patch_pink.csv"          # This is the path for the CSV File.
-# pathToCSV = "D:\\abeles\\brain3inBlender\\CSVfiles\\Tmplt18_patchANDrod.csv"          # This is the path for the CSV File.
-# pathToCSV = '/media/ohadfel/Elements/Abeles/Tmplt20correct2.csv'
-pathToCSV = "//media//ohadfel//DISKONKEYS//abeles//superTmplt18errorWline_07Patches.csv"
+pathToCSV = "//media//ohadfel//DISKONKEYS//abeles//superTmplt18errorWline_07Patches.csv"          # This is the path for the CSV File.
+
 layer = 2                      # This is the layer that all sphere and patches objects will be created in.
 rodsLayer = 3                  # This is the layer that all rod objects will be created in.
-cortexAndCerbellumStr = "out"   # This is the name of the cortex + cerebellum object
+cortexAndCerebellumStr = "out"   # This is the name of the cortex + cerebellum object
 innerStructStr = "in"          # This is the name of the inner structures object
 
 print('Starting object creation script.')
@@ -193,8 +192,8 @@ LayersRods[rodsLayer] = True
 bpy.types.Scene.new_object_creation = new_object_creation
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Create objects ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-kd_cortexAndCerbellum = create_geometry_tree(cortexAndCerbellumStr)
-kd_innerStruct = create_geometry_tree(cortexAndCerbellumStr)
+kd_cortexAndCerbellum = create_geometry_tree(cortexAndCerebellumStr)
+kd_innerStruct = create_geometry_tree(cortexAndCerebellumStr)
 try:
     print(bpy.data.objects['patches_parent'].name)
 except:
@@ -216,14 +215,13 @@ for ii in range(0, numOfObjs):
         createSphere(loc, rad, Layers, 'ID_'+mydictionary['Moshe_index'][ii])
 
     if mydictionary['Type_of_obj'][ii].lower() == 'p':
+        loc = (float(mydictionary['X'][ii]), float(mydictionary['Y'][ii]), float(mydictionary['Z'][ii]))
+        rad = float(mydictionary['Radius'][ii])
+        if project_location_on_surface:
+            co, index, dist = find_closest_vertex_to_point(loc, kd_cortexAndCerbellum)
+            loc = co
         if not new_object_creation:
-            loc = (float(mydictionary['X'][ii]), float(mydictionary['Y'][ii]), float(mydictionary['Z'][ii]))
-            rad = float(mydictionary['Radius'][ii])
-            if project_location_on_surface:
-                co, index, dist = find_closest_vertex_to_point(loc, kd_cortexAndCerbellum)
-                loc = co
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ create patch ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
             # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ old create patch $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
             # create patch on cortex And Cerebellum
@@ -231,7 +229,7 @@ for ii in range(0, numOfObjs):
             # Convert the sphere to patch
             print('Convert the sphere to patch')
             # print(len(mydictionary['Patch_On_Surf']))
-            createPatch(cortexAndCerbellumStr)
+            createPatch(cortexAndCerebellumStr)
             cleanPatch()
 
             # create patch on inner brain
