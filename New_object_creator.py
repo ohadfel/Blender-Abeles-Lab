@@ -265,7 +265,7 @@ for ii in range(0, numOfObjs):
         CurRod.data.splines[0].bezier_points[0].handle_left_type = 'VECTOR'
         # set second point to centre of sphere2
         CurRod.data.splines[0].bezier_points[1].co = (float(mydictionary['X2'][ii]), float(mydictionary['Y2'][ii]), float(mydictionary['Z2'][ii]))
-        CurRod.data.splines[0].bezier_points[1].handle_left_type = 'VECTOR'
+        CurRod.data.splines[0].bezier_points[1].handle_right_type = 'VECTOR'
         CurRod.location = (0, 0, 0)
         bpy.context.active_object.name = 'ID_'+mydictionary['Moshe_index'][ii]
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Create and set Material ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
